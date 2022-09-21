@@ -1,2 +1,2 @@
-# unforgettable_trip
+# tiny-hues
 c++ project
