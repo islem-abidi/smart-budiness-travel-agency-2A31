@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>585</width>
+    <width>859</width>
     <height>571</height>
    </rect>
   </property>
@@ -21,8 +21,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>50</y>
-      <width>571</width>
+      <y>30</y>
+      <width>831</width>
       <height>431</height>
      </rect>
     </property>
@@ -30,7 +30,7 @@
      <string notr="true">color:rgb(0, 0, 127);</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -39,9 +39,9 @@
      <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>20</y>
-        <width>351</width>
+        <width>251</width>
         <height>361</height>
        </rect>
       </property>
@@ -68,7 +68,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>140</y>
+         <y>110</y>
          <width>56</width>
          <height>16</height>
         </rect>
@@ -81,9 +81,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>180</y>
+         <y>160</y>
          <width>56</width>
-         <height>16</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="text">
@@ -94,7 +94,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>230</y>
+         <y>240</y>
          <width>56</width>
          <height>16</height>
         </rect>
@@ -117,7 +117,7 @@
        <property name="geometry">
         <rect>
          <x>120</x>
-         <y>130</y>
+         <y>110</y>
          <width>113</width>
          <height>22</height>
         </rect>
@@ -127,7 +127,7 @@
        <property name="geometry">
         <rect>
          <x>120</x>
-         <y>180</y>
+         <y>170</y>
          <width>113</width>
          <height>22</height>
         </rect>
@@ -137,7 +137,7 @@
        <property name="geometry">
         <rect>
          <x>120</x>
-         <y>220</y>
+         <y>240</y>
          <width>113</width>
          <height>22</height>
         </rect>
@@ -146,8 +146,8 @@
       <widget class="QPushButton" name="pb_ajoutter">
        <property name="geometry">
         <rect>
-         <x>200</x>
-         <y>310</y>
+         <x>110</x>
+         <y>300</y>
          <width>93</width>
          <height>28</height>
         </rect>
@@ -157,6 +157,81 @@
        </property>
       </widget>
      </widget>
+     <widget class="QPushButton" name="pb_rechercher">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>50</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>rechercher</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="le_rech">
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>50</y>
+        <width>113</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pb_pdf">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>100</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PDF</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pb_excel_3">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>150</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Excel</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pB_sts_2">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>200</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Mailing</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pb_chat">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>260</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>chat</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -165,14 +240,34 @@
      <widget class="QTableView" name="tab_employe">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>20</y>
-        <width>541</width>
-        <height>281</height>
+        <width>781</width>
+        <height>341</height>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">color:rgb(0, 0, 127);</string>
+       <string notr="true">QLineEdit
+{
+border-width: 1px;
+border-style: solid;
+bordder-color: black;
+border-radius: 10px;
+padding:0 8;
+}</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pb_trier">
+      <property name="geometry">
+       <rect>
+        <x>690</x>
+        <y>40</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Trier</string>
       </property>
      </widget>
     </widget>
@@ -350,7 +445,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>585</width>
+     <width>859</width>
      <height>26</height>
     </rect>
    </property>

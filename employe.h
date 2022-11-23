@@ -3,6 +3,7 @@
 #include <QString>
 #include <QSqlQueryModel>
 
+
 class Employe
 {
 public:
@@ -25,6 +26,10 @@ public:
     QSqlQueryModel* afficher();
     bool supprimer(int);
    bool modifier(int);
+
+   QSqlQueryModel* Rechercher(QString);
+
+   QSqlQueryModel* tri();
 
 
 

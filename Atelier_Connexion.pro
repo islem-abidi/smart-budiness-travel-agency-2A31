@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui sql
+QT += core gui sql network multimedia multimediawidgets charts printsupport widgets axcontainer
 CONFIG +=console
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,17 +26,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    chat.cpp \
+    dialog_mailing.cpp \
     employe.cpp \
+    excel.cpp \
         main.cpp \
         mainwindow.cpp \
-    connection.cpp
+    connection.cpp \
+    smtp.cpp
 
 HEADERS += \
+    chat.h \
+    dialog_mailing.h \
     employe.h \
+    excel.h \
         mainwindow.h \
-    connection.h
+    connection.h \
+    smtp.h
 
 FORMS += \
+        chat.ui \
+        dialog_mailing.ui \
         mainwindow.ui
 
 # Default rules for deployment.
