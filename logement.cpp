@@ -28,6 +28,19 @@ bool Logement::ajouter()
     return    query.exec();
 }
 
+
+bool Logement::ajouter_historique(QString n)
+{
+    QSqlQuery query;
+    QString res= QString::number(id);
+    query.prepare("INSERT INTO HISTORIQUE (nom, date_op) "
+                  "VALUES (:nom, :date_op)");
+    query.bindValue(":nom", n);
+    query.bindValue(":date_op", QDateTime::currentDateTime());
+
+    return    query.exec();
+}
+
 QSqlQueryModel * Logement::afficher()
 {
     QSqlQueryModel * model= new QSqlQueryModel();
@@ -37,6 +50,20 @@ QSqlQueryModel * Logement::afficher()
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("id_client"));
     model->setHeaderData(3, Qt::Horizontal, QObject::tr("adresse"));
     model->setHeaderData(4, Qt::Horizontal, QObject::tr("date_log"));
+
+
+    return model;
+}
+
+
+
+QSqlQueryModel * Logement::afficher_historique()
+{
+    QSqlQueryModel * model= new QSqlQueryModel();
+    model->setQuery("select * from HISTORIQUE");
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("nom"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("date"));
 
 
     return model;
@@ -110,6 +137,17 @@ bool Logement::supprimer(int idd)
     query.bindValue(":id", res);
     return    query.exec();
 }
+
+bool Logement::supprimer_historique(int idd)
+{
+    QSqlQuery query;
+    QString res= QString::number(idd);
+    query.prepare("Delete from HISTORIQUE where ID = :id ");
+    query.bindValue(":id", res);
+    return    query.exec();
+}
+
+
 void Logement::setId(int id){
     this->id= id;
 }

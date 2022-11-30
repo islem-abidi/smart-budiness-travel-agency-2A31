@@ -28,7 +28,7 @@
 background-color: rgb(85, 170, 255);</string>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -539,6 +539,34 @@ background-color: rgb(85, 170, 255);</string>
         <string>send</string>
        </property>
       </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>historique</string>
+     </attribute>
+     <widget class="QTableView" name="tableView_historique">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>20</y>
+        <width>531</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_supprimer_2">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>410</y>
+        <width>93</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>supprimer</string>
+      </property>
      </widget>
     </widget>
    </widget>

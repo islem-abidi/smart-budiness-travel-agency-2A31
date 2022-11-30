@@ -42,6 +42,8 @@ private slots:
 
     void on_pushButton_send_clicked();
 
+    void on_pushButton_supprimer_2_clicked();
+
 private:
     Ui::MainWindow *ui;
     Logement L;

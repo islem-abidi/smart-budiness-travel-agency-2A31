@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QSettings>
 #include <QPrinter>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->tableView->setModel(L.afficher());
+    ui->tableView_historique->setModel(L.afficher_historique());
 }
 
 MainWindow::~MainWindow()
@@ -27,12 +29,20 @@ void MainWindow::on_pushButton_clicked()
     QString adr = ui->lineEdit_adresse->text();
 
     Logement l(idc,idh,adr,d);
+    if(adr.isEmpty())
+                     {
+                         QMessageBox::critical(0,qApp->tr("ERREUR"),qApp->tr("veillez remplir les champs vides."),QMessageBox::Cancel);
+                     }
+    else{
     bool test = l.ajouter();
     if(test)
             {
         notif m("Logement","logement Ajouter");
+        L.ajouter_historique("logement ajoute");
         m.afficher();
         ui->tableView->setModel(L.afficher());
+        ui->tableView_historique->setModel(L.afficher_historique());
+
                 QMessageBox::information(nullptr, QObject::tr("Ajouter logement"),
                                          QObject::tr("logement ajoutée.\n"
                                                      "Click Cancel to exit."), QMessageBox::Cancel);
@@ -43,7 +53,7 @@ void MainWindow::on_pushButton_clicked()
                                       QObject::tr("Erreur !.\n"
                                                   "Click Cancel to exit."), QMessageBox::Cancel);
 
-}
+} }
 
 
 void MainWindow::on_pushButton_modif_clicked()
@@ -60,9 +70,12 @@ void MainWindow::on_pushButton_modif_clicked()
     if(test)
             {
         notif m("Logement","logement Modifer");
+        L.ajouter_historique("logement modifie");
         m.afficher();
          L.notification("gestion logements","logement modifié");
         ui->tableView->setModel(L.afficher());
+        ui->tableView_historique->setModel(L.afficher_historique());
+
                 QMessageBox::information(nullptr, QObject::tr("modif logement"),
                                          QObject::tr("logement modifie.\n"
                                                      "Click Cancel to exit."), QMessageBox::Cancel);
@@ -82,9 +95,12 @@ void MainWindow::on_pushButton_supprimer_clicked()
     if(test)
             {
             notif m("Logement","logement Supprimer");
+            L.ajouter_historique("logement supprime");
             m.afficher();
 
         ui->tableView->setModel(L.afficher());
+        ui->tableView_historique->setModel(L.afficher_historique());
+
                 QMessageBox::information(nullptr, QObject::tr("supprimer logement"),
                                          QObject::tr("logement supprimé.\n"
                                                      "Click Cancel to exit."), QMessageBox::Cancel);
@@ -198,4 +214,27 @@ void MainWindow::on_pushButton_send_clicked()
                              QObject::tr("Email Sended Successfully.\n"
                                          "Click Cancel to exit."), QMessageBox::Cancel);
 }
+
+
+void MainWindow::on_pushButton_supprimer_2_clicked()
+{
+    int id=ui->tableView_historique->model()->data(ui->tableView_historique->model()->index(ui->tableView_historique->currentIndex().row(),0)).toInt();
+    bool test = L.supprimer_historique(id);
+    if(test)
+            {
+            notif m("historique","historique Supprimer");
+            m.afficher();
+
+        ui->tableView->setModel(L.afficher());
+        ui->tableView_historique->setModel(L.afficher_historique());
+
+                QMessageBox::information(nullptr, QObject::tr("supprimer historique"),
+                                         QObject::tr("historique supprimé.\n"
+                                                     "Click Cancel to exit."), QMessageBox::Cancel);
+
+            }
+            else
+                QMessageBox::critical(nullptr, QObject::tr("supprimer historique"),
+                                      QObject::tr("Erreur !.\n"
+                                                  "Click Cancel to exit."), QMessageBox::Cancel);}
 

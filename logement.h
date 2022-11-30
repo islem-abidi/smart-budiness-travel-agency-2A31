@@ -15,15 +15,18 @@ public:
     Logement();
     Logement(int,int,QString,QDate);
     bool ajouter();
+    bool ajouter_historique(QString);
        QSqlQueryModel * tri_idh();
        QSqlQueryModel * tri_idc();
        QSqlQueryModel * tri_adr();
        QSqlQueryModel * afficher();
+       QSqlQueryModel * afficher_historique();
        void notification(QString,QString);
 
         QSqlQueryModel * recherche(QString);
 
        bool supprimer(int);
+       bool supprimer_historique(int);
        bool modifier();
        bool test_pourc(int);
        void setId(int);
