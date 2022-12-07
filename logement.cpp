@@ -1,5 +1,9 @@
 #include "logement.h"
 
+
+//ici on a l'historique et notification tri recherche crud
+
+
 Logement::Logement()
 {
 
