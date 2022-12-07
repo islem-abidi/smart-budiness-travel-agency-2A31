@@ -27,13 +27,13 @@ public:
    QString getdomaine(){return domaine;}
    QString getID_EMPLOYE(){return ID_EMPLOYE;}
 
-   int setnum_contrat(int num_contrat){ this->num_contrat=num_contrat;}
-   QString setdate_sign(QString  date_sign){ this->date_sign=date_sign;}
-   QString setdate_expir(QString  date_expir){ this->date_expir=date_expir;}
-   QString setnom_societe(QString nom_societe){this->nom_societe=nom_societe;}
-   QString setduree_contrat(QString duree_contrat){this->duree_contrat=duree_contrat;}
-    QString setdomaine(QString domaine){this->domaine=domaine;}
-    QString setID_EMPLOYE(QString ID_EMPLOYE){this->ID_EMPLOYE=ID_EMPLOYE;}
+   void setnum_contrat(int num_contrat){ this->num_contrat=num_contrat;}
+   void setdate_sign(QString  date_sign){ this->date_sign=date_sign;}
+   void setdate_expir(QString  date_expir){ this->date_expir=date_expir;}
+   void setnom_societe(QString nom_societe){this->nom_societe=nom_societe;}
+  void setduree_contrat(QString duree_contrat){this->duree_contrat=duree_contrat;}
+    void setdomaine(QString domaine){this->domaine=domaine;}
+   void setID_EMPLOYE(QString ID_EMPLOYE){this->ID_EMPLOYE=ID_EMPLOYE;}
 
 
 

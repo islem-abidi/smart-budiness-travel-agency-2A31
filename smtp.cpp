@@ -1,6 +1,4 @@
 #include "smtp.h"
-#include <QtNetwork/QAbstractSocket>
-#include <QtNetwork/QSslSocket>
 
 Smtp::Smtp( const QString &user, const QString &pass, const QString &host, int port, int timeout )
 {
@@ -15,6 +13,7 @@ Smtp::Smtp( const QString &user, const QString &pass, const QString &host, int p
 
   this->user = user;
   this->pass = pass;
+
   this->host = host;
   this->port = port;
   this->timeout = timeout;
@@ -127,7 +126,8 @@ void Smtp::readyRead()
   else if (state == User && responseLine == "334")
     {
       qDebug() << "Username";
-      *t << QByteArray().append(user).toBase64()  << "\r\n";
+      *t << user.toUtf8().toBase64()  << "\r\n";
+
       t->flush();
 
       state = Pass;
@@ -135,7 +135,7 @@ void Smtp::readyRead()
   else if (state == Pass && responseLine == "334")
     {
       qDebug() << "Pass";
-      *t << QByteArray().append(pass).toBase64() << "\r\n";
+      *t << pass.toUtf8().toBase64() << "\r\n";
       t->flush();
 
       state = Mail;

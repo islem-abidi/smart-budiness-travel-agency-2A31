@@ -1,4 +1,3 @@
-
 #include "login.h"
 #include "contrat_client.h"
 #include "ui_login.h"
