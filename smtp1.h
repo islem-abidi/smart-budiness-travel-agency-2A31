@@ -1,5 +1,5 @@
-#ifndef SMTP_H
-#define SMTP_H
+#ifndef SMTP1_H
+#define SMTP1_H
 
 #include <QtNetwork/QAbstractSocket>
 #include <QtNetwork/QSslSocket>
@@ -9,15 +9,15 @@
 #include <QtWidgets/QMessageBox>
 #include <QByteArray>
 
-class Smtp : public QObject
+class Smtp1 : public QObject
 {
     Q_OBJECT
 
 
 public:
-    Smtp( const QString &user, const QString &pass,
+    Smtp1( const QString &user, const QString &pass,
           const QString &host, int port = 465, int timeout = 30000 );
-    ~Smtp();
+    ~Smtp1();
 
     void sendMail( const QString &from, const QString &to,
                    const QString &subject, const QString &body );
@@ -50,3 +50,4 @@ private:
 
 };
 #endif
+

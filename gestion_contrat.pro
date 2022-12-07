@@ -1,7 +1,7 @@
 QT       += core gui \
     quick
 QT += sql
-
+QT += core gui sql network multimedia multimediawidgets charts printsupport widgets axcontainer
 
 config += consol
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quickwidgets serialport
@@ -14,26 +14,46 @@ CONFIG += c++17
 
 SOURCES += \
     arduino.cpp \
+    arduino1.cpp \
+    chat.cpp \
     connexion.cpp \
     contrat_client.cpp \
+    employe.cpp \
     employees.cpp \
+    excel.cpp \
     login.cpp \
     main.cpp \
     mainwindow.cpp \
-    transport.cpp
+    smtp1.cpp \
+    statistique.cpp \
+    transport.cpp \
+    notif.cpp \
+logement.cpp \
+    smtp.cpp
 
 HEADERS += \
     arduino.h \
+    arduino1.h \
+    chat.h \
     connexion.h \
     contrat_client.h \
+    employe.h \
     employees.h \
+    excel.h \
     login.h \
     mainwindow.h \
-    transport.h
+    smtp1.h \
+    statistique.h \
+logement.h \
+    transport.h \
+    notif.h \
+    smtp.h
 
 FORMS += \
+    chat.ui \
     login.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    statistique.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

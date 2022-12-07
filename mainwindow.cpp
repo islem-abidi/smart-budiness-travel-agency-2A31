@@ -1,6 +1,35 @@
 #include <mainwindow.h>
 #include "ui_mainwindow.h"
-#include "arduino.h"
+#include "arduino1.h"
+#include<QTableView>
+#include "employe.h"
+#include <QMessageBox>
+#include <QIntValidator>
+#include <QDialog>
+#include <QSqlQuery>
+#include <QSqlQueryModel>
+#include <QSortFilterProxyModel>
+#include <QTextTableFormat>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
+#include <QTextTableFormat>
+#include <QStandardItemModel>
+#include <QDialog>
+#include <QFileDialog>
+#include <QMediaPlayer>
+#include <QVideoWidget>
+#include <QDialog>
+#include <QDesktopWidget>
+#include <QSettings>
+#include <QPrinter>
+#include "smtp1.h"
+#include <QTextStream>
+#include <QFile>
+#include <QDataStream>
+#include <QTextDocument>
+#include "excel.h"
+#include "chat.h"
+#include "notif.h"
 
 
 
@@ -10,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+    //tab islem
+    ui->tab_employe->setModel(E.afficher());
     int ret=A.connect_arduino();
     switch(ret){
     case(0):qDebug ()<<"arduino is available and connected to :"<<A.getarduino_port_name();
@@ -18,13 +49,29 @@ MainWindow::MainWindow(QWidget *parent)
         break;
     case(-1):qDebug ()<<"arduino is not  available ";
         break;
+        //////////////////////////////
+        //islem
+        int ret1 =A1.connect_arduino();//lancer la connection to arduino
+                switch (ret1) {
+
+                case(0):qDebug()<<"arduino is available and connect to : "<<A1.getarduino_port_name();
+                    break;
+                case(1):qDebug()<<"arduino is available and not  connect to : "<<A1.getarduino_port_name();
+                    break;
+                case(-1):qDebug()<<"arduino is not available ";
+                    break;}
     }
 
     QObject::connect(A.getserial(),SIGNAL(readyRead()),this,SLOT(update_label()));
+          QObject::connect(A1.getserial(),SIGNAL(readyRead()),this,SLOT(update_Employ()));
     ui->tableView->setModel(C.afficher());
     ui->table_recherche->setModel(C.afficher());
 
     ui->table_transport->setModel(T.afficher());
+    ui->tableView_2->setModel(L.afficher());
+    ui->tableView_historique->setModel(L.afficher_historique());
+
+
 }
     MainWindow::~MainWindow()
 {
@@ -588,6 +635,492 @@ void MainWindow::on_pb_tri_asc_clicked()
 {
     ui->tableView->setModel(C.trierASC());
 
+}
+/////////////////////////////////////////////////////////
+//////////////////////////////////////
+/// islem
+void MainWindow::on_pb_supprimer_2_clicked()
+{
+  Employe E1; E1.Set_id(ui->le_id_supp->text().toInt());
+  bool test=E1.supprimer(E1.Get_id());
+  QMessageBox msgBox;
+  if(test)
+  {msgBox.setText("Suppression avec succes.");
+  ui->tab_employe->setModel(E.afficher());
+   ui->le_id_supp->clear();
+  }
+  else
+      msgBox.setText("Echec de suppression");
+  msgBox.exec();
+}
+
+void MainWindow::on_pb_ajoutter_clicked()
+{
+    int ID=ui->le_id->text().toInt();
+    QString NOM=ui->le_Nom->text();
+    QString PRENOM=ui->le_Prenom->text();
+
+    QString EMAIL=ui->le_Mail->text();
+    QString ETAT=ui->le_Etat->text();
+        Employe E1(ID , NOM , PRENOM , EMAIL , ETAT);
+        bool test=E1.ajouter();
+         QMessageBox msgBox;
+         if(test)
+            { msgBox.setText("ajout avec succes.");
+              ui->tab_employe->setModel(E.afficher());
+
+         }
+         else
+             msgBox.setText("Echec de lajout");
+         msgBox.exec();
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void MainWindow::on_pb_modifier_2_clicked()
+{
+   // Employe E2;
+    int ID=ui->le_id_2->text().toInt();
+    QString NOM=ui->le_Nom_2->text();
+    QString PRENOM=ui->le_Prenom_2->text();
+    QString EMAIL=ui->le_Mail_2->text();
+    QString ETAT=ui->le_Etat_2->text();
+
+        Employe E2(ID,NOM,PRENOM,EMAIL,ETAT);
+        bool test=E2.modifier(ID);
+        if(test)
+           {
+
+            ui->tab_employe->setModel(E2.afficher());//refresh
+
+                QMessageBox::information(nullptr, QObject::tr("Modifier un EMPLOYE "),
+                                  QObject::tr("EMPLOYE modifié.\n"
+                                              "Click Cancel to exit."), QMessageBox::Cancel);
+        }
+    else
+    {
+        QMessageBox::critical(nullptr,QObject::tr("not OK"),
+                QObject::tr("modification non Effectuer"),QMessageBox::Cancel);
+               }
+
+
+}
+
+
+void MainWindow::on_pb_rechercher_clicked()
+{
+
+    Employe E;
+      ui->tab_employe->setModel(E.Rechercher(ui->le_rech->text()));
+}
+
+
+void MainWindow::on_pb_trier_2_clicked()
+{
+
+     ui->tab_employe->setModel(E.tri());
+}
+
+void MainWindow::on_pb_pdf_2_clicked()
+{
+    /*QString strStream;
+                       QTextStream out(&strStream);
+                       const int rowCount = ui->tab_employe->model()->rowCount();
+                       const int columnCount =ui->tab_employe->model()->columnCount();
+
+
+                       out <<  "<html>\n"
+                               "<head>\n"
+                               "<meta Content=\"Text/html; charset=Windows-1251\">\n"
+                               <<  QString("<title>%1</title>\n").arg("eleve")
+                               <<  "</head>\n"
+                               "<body bgcolor=#CFC4E1 link=#5000A0>\n"
+                                   "<h1>Liste des employés</h1>"
+
+                                   "<table border=1 cellspacing=0 cellpadding=2>\n";
+
+                       // headers
+                           out << "<thead><tr bgcolor=#f0f0f0>";
+                           for (int column = 0; column < columnCount; column++)
+                               if (!ui->tab_employe->isColumnHidden(column))
+                                   out << QString("<th>%1</th>").arg(ui->tab_employe->model()->headerData(column, Qt::Horizontal).toString());
+                           out << "</tr></thead>\n";
+                           // data table
+                              for (int row = 0; row < rowCount; row++) {
+                                  out << "<tr>";
+                                  for (int column = 0; column < columnCount; column++) {
+                                      if (!ui->tab_employe->isColumnHidden(column)) {
+                                          QString data = ui->tab_employe->model()->data(ui->tab_employe->model()->index(row, column)).toString().simplified();
+                                          out << QString("<td bkcolor=0>%1</td>").arg((!data.isEmpty()) ? data : QString("&nbsp;"));
+                                      }
+                                  }
+                                  out << "</tr>\n";
+                              }
+                              out <<  "</table>\n"
+                                  "</body>\n"
+                                  "</html>\n";
+
+
+
+             QTextDocument *document = new QTextDocument();
+             document->setHtml(strStream);
+
+
+              // QTextDocument *document;
+                 //  document->setHtml(strStream);
+             //  document->setHtml(html);
+               QPrinter printer(QPrinter::PrinterResolution);
+               printer.setOutputFormat(QPrinter::PdfFormat);
+               printer.setOutputFileName("mypdffile.pdf");
+               document->print(&printer);*/
+
+
+    QString strStream;
+    QTextStream out(&strStream);
+
+     const int rowCount = ui->tab_employe->model()->rowCount();
+     const int columnCount = ui->tab_employe->model()->columnCount();
+    out <<  "<html>\n"
+    "<head>\n"
+                     "<meta Content=\"Text/html; charset=Windows-1251\">\n"
+                     <<  QString("<title>%1</title>\n").arg("strTitle")
+                     <<  "</head>\n"
+                     "<body bgcolor=#ffffff link=#5000A0>\n"
+
+                    //     "<align='right'> " << datefich << "</align>"
+                     "<center> <H1>Liste des Employees </H1></br></br><table border=1 cellspacing=0 cellpadding=2>\n";
+
+                 // headers
+                 out << "<thead><tr bgcolor=#f0f0f0> <th>Numero</th>";
+                 for (int column = 0; column < columnCount; column++)
+                     if (!ui->tab_employe->isColumnHidden(column))
+                         out << QString("<th>%1</th>").arg(ui->tab_employe->model()->headerData(column, Qt::Horizontal).toString());
+                 out << "</tr></thead>\n";
+
+                 // data table
+                 for (int row = 0; row < rowCount; row++) {
+                     out << "<tr> <td bkcolor=0>" << row+1 <<"</td>";
+                     for (int column = 0; column < columnCount; column++) {
+                         if (!ui->tab_employe->isColumnHidden(column)) {
+                             QString data = ui->tab_employe->model()->data(ui->tab_employe->model()->index(row, column)).toString().simplified();
+                             out << QString("<td bkcolor=0>%1</td>").arg((!data.isEmpty()) ? data : QString("&nbsp;"));
+                         }
+                     }
+                     out << "</tr>\n";
+                 }
+                 out <<  "</table> </center>\n"
+                     "</body>\n"
+                     "</html>\n";
+
+           QString fileName = QFileDialog::getSaveFileName((QWidget* )0, "Sauvegarder en PDF", QString(), "*.pdf");
+             if (QFileInfo(fileName).suffix().isEmpty()) { fileName.append(".pdf"); }
+
+            QPrinter printer (QPrinter::PrinterResolution);
+             printer.setOutputFormat(QPrinter::PdfFormat);
+            printer.setPaperSize(QPrinter::A4);
+           printer.setOutputFileName(fileName);
+
+            QTextDocument doc;
+             doc.setHtml(strStream);
+             doc.setPageSize(printer.pageRect().size());
+             doc.print(&printer);
+
+}
+
+void MainWindow::on_pb_excel_3_clicked()
+{
+
+    //exportation
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Exportation en fichier Excel islem "), qApp->applicationDirPath (),
+                                                                  tr("Fichiers d'extension Excel (*.xls)"));
+                  if (fileName.isEmpty())
+                      return;
+
+                  EXCEL obj(fileName, "GEST_EMPLOYE", ui->tab_employe);
+
+                  // you can change the column order and
+                  // choose which colum to export
+                  obj.addField(0, "ID",    "number");
+                  obj.addField(1, "NOM", "char(20)");
+                  obj.addField(2, "PRENOM", "char(20)");
+                  obj.addField(3, "EMAIL", "char(20)");
+                  obj.addField(4, "ETAT", "char(20)");
+
+
+
+
+                  int retVal = obj.export2Excel();
+
+                  if( retVal > 0)
+                  {
+                      QMessageBox::information(this, tr("FAIS!"),
+                                               QString(tr("%1 enregistrements exportées!")).arg(retVal)
+                                               );
+                  }
+}
+
+/*void MainWindow::on_pB_sts_2_clicked()
+{
+    dialog_mailing mail;
+        mail.setModal(true);
+        mail.exec();
+}*/
+
+void MainWindow::on_pb_chat_clicked()
+{
+   Chat ch;
+   ch.setModal(true);
+   ch.exec();
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// //////////////////////////////////////////////////////////////////////////////////
+///islem
+void MainWindow::on_pushButton_send_clicked()
+{
+    smtp1 = new Smtp1("tinyyhues@gmail.com" , "yovwlwapvanzgdqz", "smtp1.gmail.com",465);
+    connect(smtp1, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
+
+    msg=ui->message_mail->toPlainText();
+
+    smtp1->sendMail("ilyes_test",ui->a_mail->text(),ui->objet_mail->text(),msg);
+
+    QMessageBox::information(nullptr, QObject::tr("SENT"),
+                             QObject::tr("Email Sended Successfully.\n"
+                                         "Click Cancel to exit."), QMessageBox::Cancel);
+}
+/////////////////////////////////////////////////////////////////////////
+
+
+void MainWindow::update_Employ()
+{
+
+Employe e ;
+    data=A1.read_from_arduino();
+
+   if (data=="1"){
+        e.modifierEtat(1,"present");
+          ui->label_2->setText("Welcome amine");
+          ui->tab_employe->setModel(e.afficher());
+
+   }
+   if (data=="2"){
+        e.modifierEtat(2,"present");
+        ui->label_2->setText("Welcome Ahmed");
+        ui->tab_employe->setModel(e.afficher());
+
+
+   }
+   if (data=="0"){
+       ui->label_2->setText("Acces Denied");
+
+   }
+}
+
+
+void MainWindow::on_pushButton_modif_clicked()
+{
+    int id = ui->lineEdit_id->text().toInt();
+    int idc = ui->lineEdit_idc_2->text().toInt();
+    int idh = ui->lineEdit_idh_2->text().toInt();
+    QDate d = ui->dateEdit_date_2->date();
+    QString adr = ui->lineEdit_adresse_2->text();
+
+    Logement l(idc,idh,adr,d);
+    l.setId(id);
+    bool test = l.modifier();
+    if(test)
+            {
+        notif m("Logement","logement Modifer");
+        L.ajouter_historique("logement modifie");
+        m.afficher();
+         L.notification("gestion logements","logement modifié");
+        ui->tableView_2->setModel(L.afficher());
+        ui->tableView_historique->setModel(L.afficher_historique());
+
+                QMessageBox::information(nullptr, QObject::tr("modif logement"),
+                                         QObject::tr("logement modifie.\n"
+                                                     "Click Cancel to exit."), QMessageBox::Cancel);
+
+            }
+            else
+                QMessageBox::critical(nullptr, QObject::tr("Ajouter logement"),
+                                      QObject::tr("Erreur !.\n"
+                                                  "Click Cancel to exit."), QMessageBox::Cancel);
+}
+
+void MainWindow::on_pushButton_supprimer_2_clicked()
+{
+    int id=ui->tableView_2->model()->data(ui->tableView_2->model()->index(ui->tableView_2->currentIndex().row(),0)).toInt();
+    bool test = L.supprimer(id);
+    if(test)
+            {
+            notif m("Logement","logement Supprimer");
+            L.ajouter_historique("logement supprime");
+            m.afficher();
+
+        ui->tableView_2->setModel(L.afficher());
+        ui->tableView_historique->setModel(L.afficher_historique());
+
+                QMessageBox::information(nullptr, QObject::tr("supprimer logement"),
+                                         QObject::tr("logement supprimé.\n"
+                                                     "Click Cancel to exit."), QMessageBox::Cancel);
+
+            }
+            else
+                QMessageBox::critical(nullptr, QObject::tr("supprimer logement"),
+                                      QObject::tr("Erreur !.\n"
+                                                  "Click Cancel to exit."), QMessageBox::Cancel);
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QString strStream;
+                      QTextStream out(&strStream);
+
+                       const int rowCount = ui->tableView_2->model()->rowCount();
+                       const int columnCount = ui->tableView_2->model()->columnCount();
+                      out <<  "<html>\n"
+                      "<head>\n"
+                                       "<meta Content=\"Text/html; charset=Windows-1251\">\n"
+                                       <<  QString("<title>%1</title>\n").arg("strTitle")
+                                       <<  "</head>\n"
+                                       "<body bgcolor=#ffffff link=#5000A0>\n"
+
+                                      //     "<align='right'> " << datefich << "</align>"
+                                       "<center> <H1>Liste des logements</H1></br></br><table border=1 cellspacing=0 cellpadding=2>\n";
+
+                                   // headers
+                                   out << "<thead><tr bgcolor=#f0f0f0> <th>Numero</th>";
+                                   out<<"<cellspacing=10 cellpadding=3>";
+                                   for (int column = 0; column < columnCount; column++)
+                                       if (!ui->tableView_2->isColumnHidden(column))
+                                           out << QString("<th>%1</th>").arg(ui->tableView_2->model()->headerData(column, Qt::Horizontal).toString());
+                                   out << "</tr></thead>\n";
+
+                                   // data table
+                                   for (int row = 0; row < rowCount; row++) {
+                                       out << "<tr> <td bkcolor=0>" << row+1 <<"</td>";
+                                       for (int column = 0; column < columnCount; column++) {
+                                           if (!ui->tableView_2->isColumnHidden(column)) {
+                                               QString data = ui->tableView_2->model()->data(ui->tableView_2->model()->index(row, column)).toString().simplified();
+                                               out << QString("<td bkcolor=0>%1</td>").arg((!data.isEmpty()) ? data : QString("&nbsp;"));
+                                           }
+                                       }
+                                       out << "</tr>\n";
+                                   }
+                                   out <<  "</table> </center>\n"
+                                       "</body>\n"
+                                       "</html>\n";
+
+                             QString fileName = QFileDialog::getSaveFileName((QWidget* )0, "Sauvegarder en PDF", QString(), "*.pdf");
+                               if (QFileInfo(fileName).suffix().isEmpty()) { fileName.append(".pdf"); }
+
+                              QPrinter printer (QPrinter::PrinterResolution);
+                               printer.setOutputFormat(QPrinter::PdfFormat);
+                            //  printer.setPaperSize(QPrinter::A4);
+                             printer.setOutputFileName(fileName);
+
+                              QTextDocument doc;
+                               doc.setHtml(strStream);
+                               //doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
+                               doc.print(&printer);
+}
+
+void MainWindow::on_lineEdit_2_textChanged(const QString &arg1)
+{
+    ui->tableView_2->setModel(L.recherche(arg1));
+
+}
+
+void MainWindow::on_radioButton_clicked()
+{
+    ui->tableView_2->setModel(L.tri_idh());
+
+}
+
+void MainWindow::on_radioButton_2_clicked()
+{
+    ui->tableView_2->setModel(L.tri_idc());
+
+}
+
+void MainWindow::on_radioButton_3_clicked()
+{
+    ui->tableView_2->setModel(L.tri_adr());
+
+}
+
+void MainWindow::on_pushButton_send_2_clicked()
+{
+    smtp = new Smtp("service.logement.contact@gmail.com" , "fxxdjttitpklrnkn", "smtp.gmail.com",465);
+    connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
+
+    msg=ui->message_mail->toPlainText();
+
+    smtp->sendMail("ilyes_test",ui->a_mail->text(),ui->objet_mail->text(),msg);
+
+    QMessageBox::information(nullptr, QObject::tr("SENT"),
+                             QObject::tr("Email Sended Successfully.\n"
+                                         "Click Cancel to exit."), QMessageBox::Cancel);
+}
+
+void MainWindow::on_pushButton_supprimer_3_clicked()
+{
+    int id=ui->tableView_historique->model()->data(ui->tableView_historique->model()->index(ui->tableView_historique->currentIndex().row(),0)).toInt();
+    bool test = L.supprimer_historique(id);
+    if(test)
+            {
+            notif m("historique","historique Supprimer");
+            m.afficher();
+
+        ui->tableView_2->setModel(L.afficher());
+        ui->tableView_historique->setModel(L.afficher_historique());
+
+                QMessageBox::information(nullptr, QObject::tr("supprimer historique"),
+                                         QObject::tr("historique supprimé.\n"
+                                                     "Click Cancel to exit."), QMessageBox::Cancel);
+
+            }
+            else
+                QMessageBox::critical(nullptr, QObject::tr("supprimer historique"),
+                                      QObject::tr("Erreur !.\n"
+                                                  "Click Cancel to exit."), QMessageBox::Cancel);
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    int idc = ui->lineEdit_idc->text().toInt();
+    int idh = ui->lineEdit_idh->text().toInt();
+    QDate d = ui->dateEdit_date->date();
+    QString adr = ui->lineEdit_adresse->text();
+
+    Logement l(idc,idh,adr,d);
+    if(adr.isEmpty())
+                     {
+                         QMessageBox::critical(0,qApp->tr("ERREUR"),qApp->tr("veillez remplir les champs vides."),QMessageBox::Cancel);
+                     }
+    else{
+    bool test = l.ajouter();
+    if(test)
+            {
+        notif m("Logement","logement Ajouter");
+        L.ajouter_historique("logement ajoute");
+        m.afficher();
+        ui->tableView_2->setModel(L.afficher());
+        ui->tableView_historique->setModel(L.afficher_historique());
+
+                QMessageBox::information(nullptr, QObject::tr("Ajouter logement"),
+                                         QObject::tr("logement ajoutée.\n"
+                                                     "Click Cancel to exit."), QMessageBox::Cancel);
+
+            }
+            else
+                QMessageBox::critical(nullptr, QObject::tr("Ajouter logement"),
+                                      QObject::tr("Erreur !.\n"
+                                                  "Click Cancel to exit."), QMessageBox::Cancel);
+
+}
 }
 
 

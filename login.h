@@ -25,12 +25,12 @@ public:
 
 
 private slots:
-    void on_pb_connecter_clicked();
+   // void on_pb_connecter_clicked();
     void getCardUid();
     void on_loginButton_clicked();
 
     void on_scanCardButton_clicked();
-    void readyReadSlot();
+  //  void readyReadSlot();
     void authRFID();
 
 
